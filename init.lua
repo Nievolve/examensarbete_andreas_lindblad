@@ -5,9 +5,9 @@ require("config.lazy")
 -- REMAP
 vim.keymap.set("i", "<C-H>", "<C-W>", { noremap = true })
 
+-- Strctured Text
 local M = {}
 
--- Standardkonfiguration
 local default_config = {
   lsp = {
     enable = true,
@@ -23,7 +23,7 @@ function M.setup(user_config)
   M.config = vim.tbl_deep_extend("force", default_config, user_config or {})
 
   -- Aktivera filtypsdetektering
-  require("st-pro.core.ftdetect").setup()
+  require("st-pro.core").setup()
 
   -- Logik för att starta LSP om aktiverat
   if M.config.lsp.enable then
