@@ -23,7 +23,7 @@ function M.setup(user_config)
   M.config = vim.tbl_deep_extend("force", default_config, user_config or {})
 
   -- Aktivera filtypsdetektering
-  require("st-pro.core").setup()
+  require("st-pro.core.ftdectect").setup()
 
   -- Logik för att starta LSP om aktiverat
   if M.config.lsp.enable then
