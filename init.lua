@@ -6,4 +6,4 @@ require("config.lazy")
 vim.keymap.set("i", "<C-H>", "<C-W>", { noremap = true })
 
 -- Strctured Text
-require("st-pro.core.ftdectect").setup()
+require("st-pro.core.ftdetect").setup() -- Varför fungerar den inte?
