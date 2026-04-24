@@ -1,3 +1,4 @@
+
 ; Keywords
 (keyword) @keyword
 ["IF" "THEN" "ELSE" "END_IF" "CASE" "OF" "END_CASE" "FOR" "TO" "BY" "DO" "END_FOR" "WHILE" "END_WHILE" "REPEAT" "UNTIL" "END_REPEAT"] @keyword
@@ -14,3 +15,9 @@
 
 ; Comments
 (comment) @comment
+
+(variable_declaration (identifier) @variable)
+(type_identifier) @type
+(assignment ":=" @operator)
+["VAR" "END_VAR" "PROGRAM" "END_PROGRAM"] @keyword
+(number) @number
