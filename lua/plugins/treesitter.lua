@@ -1,25 +1,72 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  opts = function(_, opts)
-    -- 1. Berätta för Treesitter att använda din GCC-kompilator
-    require("nvim-treesitter.install").compilers = { "gcc" }
+  branch = "main",
+  lazy = false,
+  config = function()
+    local languages = {
+      "luadoc",
+      "printf",
+      "vim",
+      "vimdoc",
+      "markdown",
+      "latex",
+      "markdown_inline",
+      "query",
+      "ini",
+      "udev",
+      "ssh_config",
+      "tmux",
 
-    -- 2. Registrera språket "st" manuellt
-    local parsers = require("nvim-treesitter.parsers")
-    parsers.get_parser_configs().st = {
-      install_info = {
-        url = vim.fn.stdpath("config") .. "/tree-sitter_ST",
-        files = { "src/parser.c" },
-        branch = "main",
-        generate_requires_npm = false,
-        requires_generate_from_grammar = false,
-      },
-      filetype = "st",
+      "diff",
+      "git_config",
+      "gitcommit",
+      "git_rebase",
+      "gitignore",
+      "gitattributes",
+      "regex",
+
+      "sql",
+      "lua",
+      "bash",
+      "java",
+      "rust",
+      "python",
+      "c",
+      "asm",
+      "cpp",
+      "hyprlang",
+      "go",
+      "gomod",
+      "gowork",
+      "gosum",
+
+      "yaml",
+      "toml",
+      "xml",
+      "json",
+
+      "html",
+      "css",
+      "javascript",
+      "typescript",
+      "tsx",
+      "astro",
+      "svelte",
     }
 
-    -- 3. Tvinga in 'st' i listan över installerade språk
-    if type(opts.ensure_installed) == "table" then
-      table.insert(opts.ensure_installed, "st")
-    end
+    require("nvim-treesitter").install(languages)
+
+    -- Enable highlighting automatically for all buffers where a parser exists
+    vim.api.nvim_create_autocmd("FileType", {
+      group = vim.api.nvim_create_augroup("TreesitterSetup", { clear = true }),
+      callback = function(args)
+        local buf = args.buf
+        local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype) or vim.bo[buf].filetype
+        local ok, _ = pcall(vim.treesitter.start, buf, lang)
+        if ok then
+          vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end,
+    })
   end,
 }
