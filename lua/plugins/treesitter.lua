@@ -10,9 +10,9 @@ return {
     local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
     parser_config.st = {
       install_info = {
-        url = vim.fn.stdpath("config") .. "/tree-sitter_ST", -- Sökväg till din mapp
+        url = "https://github.com/Nievolve/tree-sitter_ST",
         files = { "src/parser.c" },
-        branch = "main",
+        branch = "master",
         generate_requires_npm = false,
         requires_generate_from_grammar = false,
       },
@@ -20,7 +20,7 @@ return {
     }
 
     local languages = {
-      "st", -- Lade till ditt språk här
+      "st", -- Structured Text
       "luadoc",
       "printf",
       "vim",
