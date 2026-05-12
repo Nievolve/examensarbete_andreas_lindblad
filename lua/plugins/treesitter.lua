@@ -1,13 +1,12 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  branch = "main",
+  branch = "main", -- optional?
   lazy = false,
   config = function()
-    -- 1. Berätta för Treesitter att använda din installerade kompilator
     require("nvim-treesitter.install").compilers = { "gcc" }
-
-    -- 2. Registrera den lokala ST-parsern i systemet innan installation
+    -- get_parser_configs verkar inte fungera
     local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+    -- Hur lägger man till en parser från github/local?
     parser_config.st = {
       install_info = {
         url = "https://github.com/Nievolve/tree-sitter_ST",
@@ -21,57 +20,30 @@ return {
 
     local languages = {
       "st", -- Structured Text
-      "luadoc",
-      "printf",
       "vim",
-      "vimdoc",
       "markdown",
       "latex",
-      "markdown_inline",
       "query",
-      "ini",
-      "udev",
-      "ssh_config",
-      "tmux",
-      "diff",
-      "git_config",
-      "gitcommit",
-      "git_rebase",
-      "gitignore",
-      "gitattributes",
-      "regex",
-      "sql",
-      "lua",
       "bash",
       "java",
       "rust",
       "python",
       "c",
-      "asm",
-      "cpp",
       "hyprlang",
-      "go",
-      "gomod",
-      "gowork",
-      "gosum",
       "yaml",
-      "toml",
       "xml",
       "json",
       "html",
       "css",
       "javascript",
       "typescript",
-      "tsx",
-      "astro",
-      "svelte",
     }
 
     -- Installera språken
     require("nvim-treesitter.configs").setup({
       ensure_installed = languages,
       highlight = {
-        enable = true, -- Viktigt: Detta aktiverar highlighting-motorn
+        enable = true,
       },
     })
 
