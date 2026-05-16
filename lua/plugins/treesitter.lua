@@ -1,63 +1,61 @@
 return {
-  "nvim-treesitter/nvim-treesitter",
-  branch = "main", -- optional?
-  lazy = false,
-  config = function()
-    require("nvim-treesitter.install").compilers = { "gcc" }
-    -- get_parser_configs verkar inte fungera
-    local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-    -- Hur lägger man till en parser från github/local?
-    parser_config.st = {
-      install_info = {
-        url = "https://github.com/Nievolve/tree-sitter_ST",
-        files = { "src/parser.c" },
-        branch = "master",
-        generate_requires_npm = false,
-        requires_generate_from_grammar = false,
+  {
+    "nvim-treesitter/nvim-treesitter",
+    version = false, -- använd senaste master
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" },
+    opts = {
+      highlight = { enable = true },
+      indent = { enable = true },
+      ensure_installed = {
+        "st",
+        "vim",
+        "markdown",
+        "latex",
+        "query",
+        "bash",
+        "java",
+        "rust",
+        "python",
+        "c",
+        "hyprlang",
+        "yaml",
+        "xml",
+        "json",
+        "html",
+        "css",
+        "javascript",
+        "typescript",
       },
-      filetype = "st",
-    }
+    },
+    config = function(_, opts)
+      -- 1. Hämta parser-modulen säkert
+      local parsers = require("nvim-treesitter.parsers")
 
-    local languages = {
-      "st", -- Structured Text
-      "vim",
-      "markdown",
-      "latex",
-      "query",
-      "bash",
-      "java",
-      "rust",
-      "python",
-      "c",
-      "hyprlang",
-      "yaml",
-      "xml",
-      "json",
-      "html",
-      "css",
-      "javascript",
-      "typescript",
-    }
+      -- 2. Registrera din anpassade parser
+      local parser_config = parsers.get_parser_configs()
+      parser_config.st = {
+        install_info = {
+          url = "https://github.com/Nievolve/tree-sitter_ST",
+          files = { "src/parser.c" },
+          branch = "master",
+        },
+        filetype = "st",
+      }
 
-    -- Installera språken
-    require("nvim-treesitter.configs").setup({
-      ensure_installed = languages,
-      highlight = {
-        enable = true,
-      },
-    })
+      -- 3. Kör setup med opts-tabellen ovan
+      require("nvim-treesitter.configs").setup(opts)
 
-    -- Din befintliga autocmd för att starta Treesitter
-    vim.api.nvim_create_autocmd("FileType", {
-      group = vim.api.nvim_create_augroup("TreesitterSetup", { clear = true }),
-      callback = function(args)
-        local buf = args.buf
-        local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype) or vim.bo[buf].filetype
-        local ok, _ = pcall(vim.treesitter.start, buf, lang)
-        if ok then
-          vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-        end
-      end,
-    })
-  end,
+      -- 4. Din autocmd för att säkerställa att ST startar korrekt
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "st",
+        callback = function(args)
+          local ok = pcall(vim.treesitter.start, args.buf, "st")
+          if ok then
+            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
+      })
+    end,
+  },
 }
