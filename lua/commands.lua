@@ -1,22 +1,20 @@
 vim.api.nvim_create_user_command("Convert", function()
-  -- 1. Sökvägar
+  --  Path
   local target_path = vim.fn.expand("%:p")
   local original_filename = vim.fn.expand("%:t")
   local original_directory = vim.fn.expand("%:p:h")
-
-  -- 2. "Skrubba" filändelsen: Byt ut .st mot .xml
-  -- %-tecknet används för att "escapea" punkten i Lua-patterns
+  -- Cleaning name and add extension
   local clean_filename = string.gsub(original_filename, "%.st$", "")
   local final_output_name = clean_filename .. ".xml"
 
-  -- 3. Datum
+  --  Add current date to a variable
   local date = os.date("%Y-%m-%d")
 
-  -- 4. Bygg output-sökväg (Datum-Filnamn.xml)
+  -- Create path for output
   local output_filename = date .. "-" .. final_output_name
   local output_path = original_directory .. "\\" .. output_filename
 
-  -- 5. Kommandot
+  -- NVim command execute
   local command = string.format(
     '!python3 "C:\\Users\\andre\\OneDrive - sti.se\\Project\\Python_ETL_ST_XML\\main.py" "%s" "%s"',
     target_path,
@@ -24,5 +22,6 @@ vim.api.nvim_create_user_command("Convert", function()
   )
 
   vim.cmd(command)
-  print("Exporterad till: " .. output_filename)
-end, { desc = "Konverterar .st till .xml via Python" })
+  -- Print for user
+  print("Export to: " .. output_filename)
+end, { desc = "Converted .st to .xml" })
